@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
+use App\Models\ValidEmail;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
@@ -27,7 +28,18 @@ class CreateNewUser implements CreatesNewUsers
             'terms' => Jetstream::hasTermsAndPrivacyPolicyFeature() ? ['accepted', 'required'] : '',
         ])->validate();
 
-        return User::create([
+        // cek email itera atau bukan
+        $checkEmail = explode("@", $input['email']);
+        $nameEmail = $checkEmail[1];
+        $validateEmail = ValidEmail::where('name', $nameEmail)->first();
+        if (!$validateEmail){
+            return response()->json([
+                'message' => 'Email Unauthorized',
+            ]); 
+        }
+        $username = $checkEmail[0];
+
+        User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
