@@ -9,6 +9,7 @@ use App\Http\Controllers\AfterPresentation;
 use App\Http\Controllers\BeforePresentation;
 use App\Http\Controllers\InviteController;
 use App\Http\Controllers\JobTraining;
+use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\MemberController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SubmissionController;
