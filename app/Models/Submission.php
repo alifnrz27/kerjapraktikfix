@@ -24,5 +24,26 @@ class Submission extends Model
         'transcript',
         'vaccine',
         'submission_status_id',
+        'form_major',
+        'form_company',
+        'title',
+        'form_presentation',
+        'result_company',
+        'log_activity',
+        'form_mentoring',
+        'report',
+        'screenshot_before_presentation',
+        'statement_letter',
+        'report_of_presentation',
+        'notes',
+        'report_revision',
+        'screenshot_after_presentation',
+        'date_presentation',
+        'place_presentation',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

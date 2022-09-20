@@ -24,7 +24,6 @@ class InviteController extends Controller
                     Submission::where(['id' => $lastSubmission->id])->update(['submission_status_id'=>3]);
                     User::where(['id' => $lastSubmission->user_id])->update(['inviteable' => 1]);
                 }
-                
             }
     
             // cek jika tidak ada lagi yg menerima undangan, ubah status ketua jadi 5 (menuggu anggota upload)

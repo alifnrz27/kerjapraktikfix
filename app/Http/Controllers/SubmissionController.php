@@ -8,7 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
 
-class SubmissionController extends Controller
+    class SubmissionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -41,7 +41,6 @@ class SubmissionController extends Controller
         $academicYear = AcademicYear::where('status', 1)->first();
         $data = [
             'team_status'=> 'required',
-            'name' => 'required',
             'transcript' =>'required',
             'form_submission' => 'required',
             'vaccine' => 'required',
@@ -51,7 +50,6 @@ class SubmissionController extends Controller
             'number' => 'required',
             'start' => 'required',
             'end' => 'required',
-            'description'=> 'required'
         ];
         // default bahwa dia tidak berkelompok
         $team_id = 0;
@@ -71,7 +69,7 @@ class SubmissionController extends Controller
                 if(!$member){
                     break;
                 }
-
+                
                 $user = User::where([
                     ['role', '=',  3], //harus mahasiswa
                     ['inviteable', '=', 1], // bisa diundang
@@ -227,6 +225,51 @@ class SubmissionController extends Controller
             return response()->json([
                 'message' => 'data not found',
             ], 404);
+        }
+    }
+
+    public function uploadSecondSubmission(Request $request){
+        // validasi data
+        $request->validate([
+            'form_major' => 'required',
+            'form_company'=>'required'
+        ]);
+
+        $submission = Submission::where([
+            'user_id'=> $request->user()->id,
+            ])->latest()->first();
+
+            if($submission->submission_status_id != 10 && $submission->submission_status_id != 13){
+                return response()->json([
+                    'message' => 'data not found'
+                ], 404);
+            }
+
+        // jika tidak berkelompok
+        if($submission->team_id == 0){
+            $submission->update([
+                'form_major' => $request->form_major,
+                'form_company' => $request->form_company,
+                'submission_status_id' => 12
+            ]);
+
+            return response()->json([
+                'message' => 'success'
+            ], 200);
+        }
+        // jika berkelompok
+        else{
+            Submission::where([
+                ['team_id', '=', $submission->team_id],
+                ['submission_status_id' , '!=', 3]
+            ])->update([
+                'form_major' => $request->form_major,
+                'form_company' => $request->form_company,
+                'submission_status_id' => 12
+            ]);
+            return response()->json([
+                'message' => 'success'
+            ], 200);
         }
     }
 }
